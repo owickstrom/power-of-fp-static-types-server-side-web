@@ -1,0 +1,26 @@
+\lstdefinelanguage{purescript}
+{
+  % list of keywords
+  morekeywords={
+    module,
+    import,
+    if,
+    then,
+    else,
+    let,
+    in,
+    case,
+    of,
+    type,
+    newtype,
+    data,
+    forall,
+    where,
+    derive,
+    instance
+  },
+  sensitive=true,
+  morecomment=[l]{--}, % l is for line comment
+  morecomment=[s]{\{-}{-\}}, % s is for start and end delimiter
+  morestring=[b]" % defines that strings are enclosed in double quotes
+}

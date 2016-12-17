@@ -1,0 +1,688 @@
+\begin{frame}
+  \titlepage
+  \notelist{
+    \item Hi, and welcome to my talk: Oden --  A functional programming
+      language for the Go ecosystem
+    \item My name is Oskar Wickström
+    \item I live and work in Malmö, Sweden
+    \item Since November last year I've been working on this project, on
+      my spare time
+    \item It's still a very young experiment
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Agenda}
+  \begin{itemize}
+    \item Background
+    \item Project Goals
+    \item Current State
+    \item What's next?
+    \item Questions
+  \end{itemize}
+  \notelist{
+    \item We will cover...
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Background}
+  \notelist{
+    \item So, starting with the background
+  }
+\end{frame}
+
+\begin{frame}
+  \singlesubheading{
+    Things I've been thinking about lately
+  }
+  \notelist{
+    \item The last couple of years I've been thinking about programming languages
+      a lot
+    \item Here are some of those thoughts, in no particular order
+    \item There will be a lot of personal opinions
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{I want type-safe functional programming for writing
+  web applications.}
+  \notelist{
+    \item Haskell is my most viable option
+    \item I don't get along with Scala
+    \item Rust for web apps does not seem that mature, also not the abstraction
+      level I'm looking for
+    \item Java 8 with Rx or Streams is OK, except that working with
+      data is a pain
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Haskell is a great language.}
+  \notelist{
+    \item To be honest; maybe Haskell is the answer here. I'm not sure.
+    \item The Yesod framework looks interesting, but I haven't dug into it.
+    \item Haskell has some pain points, in my opinion.
+    \item The tooling is a bit messy still, though Stack is a great step
+      forward.
+    \item The flexibility, like all the language pragmas, Template Haskell is
+      complex
+    \item It's like the bag of goodies is too big.
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Can we have the safety of Haskell, but in a smaller and simpler
+  language?}
+  \notelist{
+    \item I'd like to have less decisions, like which pragmas to use, and how
+      to indent your source code
+    \item In this regard I think Go is doing very well
+    \item There are strong conventions for most aspects of writing code
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{I want fast, "clean slate" compilation as an option.}
+  \notelist{
+    \item First off; I love REPLs and interactive programming
+    \item I do not like being forced to use the REPL for all compilation
+    \item I think interactive stateful compilation is complex
+    \item Maybe I'm just bad at using it
+    \item I end up with non-compiling Clojure code quite often
+    \item I want to be able to do a fast clean-slate compilation as well
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{We should optimize for writing code that is correct,
+  understandable, and safe to change.}
+  \notelist{
+    \item I don't want chase down silly programming errors in runtime.
+    \item I want others to be able to understand the code I have written
+    \item (I'll get back to that)
+    \item Ideally, changing existing code should feel as safe as writing new
+      code
+    \item When it comes to correctness and safety, I think Haskell really
+      shines.
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{We should not optimize for cleverness.}
+  \notelist{
+    \item Dense code and one-liners might be good for your ego, but not very
+      practical to maintain.
+    \item Hiding essentials in code -- implicits, magic, monkey patching --
+      I think we should favour simplicity and clearness
+    \item Make a good tradeoff. Abstract non-essiential, emphasize essential.
+    \item I'm thinking about macros as well.
+    \item Take the argument that Clojure has almost no syntax and therefore
+      is easier to learn. Clojure has loads of syntax -- it's just defined
+      in macros instead of in the reader.
+    \item OK, back to type-safe web applications...
+    }
+\end{frame}
+
+\begin{frame}
+  \singletext{Maybe static typing on top of Javascript?}
+  \notelist{
+    \item PureScript with NodeJS is an option
+    \item Perhaps TypeScript or Flow
+    \item All requires some sort of manual FFI bindings or annotations
+  }
+\end{frame}
+
+
+\begin{frame}
+  \singletext{Having to write FFI bindings to use libraries is cumbersome. Can
+  the compiler do this for us?}
+  \notelist{
+    \item If we compile to a language with a static type system the compiler
+      could query the types
+    \item The compiler could generate wrappers and conversions automatically
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Can we reuse all the good stuff from Go, but use a functional
+  language?}
+  \notelist{
+    \item Many seem to like writing Go libraries and tools
+    \item All of those programmers doesn't necessarily prefer functional programming
+    \item Can we reuse all the good stuff they're creating, but in a functional
+      language?
+  }
+\end{frame}
+
+\begin{frame}
+  \singlesubheading{Yes, we can!}
+  \notelist{
+    \item Yes, we can!
+    \item And with that conclusion, I started working on Oden.
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Why Go?}
+  \begin{itemize}
+    \item Ecosystem of libraries and tools
+    \item Goroutines, channels
+    \item Cross-compilation
+    \item Static linking
+    \item Simple compile target
+    \item Fast compiler
+  \end{itemize}
+  \notelist{
+    \item You might be wondering: Why Go?
+    \item Growing ecosystem of useful libraries and tools
+    \item Support for in-process concurrency using lightweight threads and channels
+    \item Cross-compilation is easy
+    \item Static linking is nice for deploying servers
+    \item The Go specification is quite small, it's a simple language
+    \item The Go compiler is fast, transpiling to Go source code works well
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{What I'm missing in Go}
+  \notelist{
+    \item So why not program in Go directly?
+    \item I think Go has some drawbacks:
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Expressions over statements}
+  \notelist{
+    \item I really like expressions. I want if, switch, for, and so on to be
+      expressions
+    \item That includes the go statement, spawning a new goroutine
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Generic Programming}
+  \notelist{
+    \item Go has no parametric polymorphism -- you can't write generic type-safe
+      functions like map, filter etc
+    \item You can't create polymorphic data structures, like a sorted set
+    \item The Go community seem to have settled at templates and code generation
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Abstraction}
+  \notelist{
+    \item I'd like to have a monadic Maybe type instead of manually checking
+      for nil everywhere
+    \item And there's error handling:
+    \item It's explicit in Go, which is good, but it is tedious and
+      error-prone
+  }
+\end{frame}
+
+\begin{frame}[fragile]
+  \lstinputlisting[language=go,basicstyle=\linespread{1}\ttfamily\Small]{src/listings/error-handling.go.txt}
+  \notelist{
+    \item This is a function I wrote in Go a couple of years ago
+    \item If you cannot see the text, don't worry
+    \item What I want to show is this:
+  }
+\end{frame}
+
+\begin{frame}[fragile]
+  \lstinputlisting[language=go,basicstyle=\linespread{1}\ttfamily\Small]{src/listings/error-handling-dim-error-handling.go.txt}
+  \notelist{
+    \item All the gray stuff is error handling.
+    \item That's almost half the code.
+    \item So what does it do?
+  }
+\end{frame}
+
+\begin{frame}[fragile]
+  \lstinputlisting[language=go]{src/listings/if-err-not-nil.go.txt}
+  \notelist{
+    \item It checks, over and over again, if the last call returned a non-nil error.
+    \item I would argue that this is very error-prone and boring.
+    \item As I wrote this talk, I found another issue...
+  }
+\end{frame}
+
+\begin{frame}[fragile]
+  \lstinputlisting{src/listings/error-handling-bold-error-check.go.txt}
+  \notelist{
+    \item There's a totally useless, and harmless, error check.
+    \item Actually io.Copy returns an error, but I missed that
+    \item A warning or error when discarding results would be nice
+    \item So why did I write this error check?
+    \item Maybe because of the noise of error handling and early exits.
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Project Goals}
+  \notelist{
+    \item Let's have a look at the goals of the Oden project
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Use Go as a platform}
+  \notelist{
+    \item First off: The strategy is to use Go as a platform
+    \item It's comparable with Scala for the JVM, Elixir for Erlang
+    \item I do not want to create an island
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Avoid cleverness, prefer clarity}
+  \notelist {
+    \item I'm happy to write a few extra lines of code if it makes it easier
+      to read and to understand
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Expressions over statements}
+  \notelist{
+    \item I talked about these earlier -- if, switch, go and so on
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Support generic programming}
+  \notelist{
+    \item Copy-pasting and changing types manually...
+    \item Or writing the same code over and over...
+    \item ... is complex, error-prone and harder to understand.
+    \item Why is it harder to understand?
+    \item A developer must introspect a for loop to realize it's really a
+      map or a filter.
+    \item We can do better than templates and code generation
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Support good abstractions}
+  \notelist{
+    \item Reduce the risk of programming errors
+    \item Reuse stable, working code
+    \item Make it possible to abstract nil checking, error handling
+      and other common tasks
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Type inference}
+  \notelist{
+    \item Top-level type signatures should be encouraged, maybe required
+    \item The rest of the types should be inferred
+    \item And you should be able to explicitly annotate types where you like
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Immutability by default}
+  \notelist{
+    \item Oden should have immutable data structures and they should be the
+      default
+    \item If Go is built for writing concurrent applications with thousands or
+      millions of goroutines, I think immutable data structures is a clear
+      win
+    \item This is a big area, nothing done here yet
+    }
+\end{frame}
+
+\begin{frame}
+  \singletext{Pattern matching}
+  \notelist{
+    \item Pattern matching should be the preferred way of doing control flow
+    \item And related to pattern matching...
+    \item Exhaustiveness checking -- this is when the compiler makes sure you
+      have pattern matched all possible values in a case expression
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Simple interoperability with Go}
+  \notelist{
+    \item I think this is a key feature of Oden.
+    \item Being able to use Go libraries without having to write any bindings
+      would be very nice.
+    \item This is also the hard part. Go has some things which are tricky to
+      interop with: untyped literals, special type system cases like directed
+      channels, and type conversions
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{Fun!}
+  \notelist{
+    \item I want Oden to be fun to program in
+    \item It should be easy for newcomers to get started
+    \item (half time?)
+  }
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/graphics/mvp-triangle.png}
+    \caption{\textit{MVP Pyramid}}
+  \end{figure}
+  \notelist {
+    \item I've tried sticking to a \textit{minimum viable product} approach
+    \item The blue slice illustrates how to prioritize
+    \item It's not only a bunch of compiler features
+    \item It's also making them accessible and usable
+    \item And to create a layer of emotion
+    \item This should affect all aspects of the project -- the language,
+      website, documentation, command line tools
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Current State}
+  \notelist{
+    \item We've talked about the goals of Oden
+    \item My focus has been on the features of highest uncertainty
+    \item The first compiler was written in Racket, great choice
+    \item After a while I rewrote in Haskell
+    \item Let's take a quick look at the current state of Oden
+    \item This will not cover everything
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Hello World}
+  \lstinputlisting[language=oden]{src/listings/hello-world.oden}
+  \notelist{
+    \item The main function is the entry point
+    \item It takes no argument and returns unit
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Operators}
+  \lstinputlisting[language=oden,firstline=3]{src/listings/operators.oden}
+  \notelist{
+    \item Here we see the predefined operators in Oden
+    \item They desugar to something called Protocol Methods
+    \item I will talk more about protocols later
+    \item With desugaring and protocols, Oden gets operator overloading
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Operator Desugaring}
+  \begin{tabular}{ >{\ttfamily}l l l }
+    \normalfont{Operator} & Protocol & Method \\
+    \toprule
+    -  & Num     & negate \\
+    !  & Logical & not \\
+    \midrule
+    +  & Num     & add \\
+    -  & Num     & subtract \\
+    *  & Num     & multiply \\
+    /  & Num     & divide \\
+    \&\& & Logical & conjunction \\
+    || & Logical & disjunction \\
+    ++ & Monoid  & apply
+  \end{tabular}
+  \notelist{
+    \item These are the desugaring rules for operators
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{No custom operators}
+  \notelist{
+    \item There is currently no way to define custom operators
+    \item I'm not sure there should be
+    \item You can overload the built in ones
+  }
+\end{frame}
+
+\begin{frame}
+  \singletext{No macros}
+  \notelist{
+    \item There is no support for macros
+    \item I want to keep the language simple
+    \item I'd rather have abstractions based on Monads and Applicatives than
+      on metaprogramming
+    \item You might have to write that extra line of code
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Curried Functions}
+  \lstinputlisting[language=oden,firstline=3,lastline=9]{src/listings/curried-generic.oden}
+  \notelist{
+    \item Here's an example of using currying in Oden
+    \item EXPLAIN CODE
+    \item If we add explicit type signatures to illustrate the types...
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Curried Functions with Type Signatures}
+  \lstinputlisting[language=oden,firstline=3,lastline=13]{src/listings/curried-generic-type-sigs.oden}
+  \notelist{
+    \item We can see what's going on more clearly
+    \item Here the function \textit{twice} is polymorphic
+    \item The forall keyword is used to introduce type variables
+    \item Actually the \textit{plus} function is less general than it could be,
+      but let's keep it simple
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Imports from Go}
+  \lstinputlisting[language=oden]{src/listings/import-foreign.oden}
+  \notelist{
+    \item We can import packages from Go
+    \item This is still very limited
+    \item Works with the types I've mapped so far
+    \item Imported functions are curried automatically
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Records}
+  \lstinputlisting[language=oden,firstline=9]{src/listings/records.oden}
+  \notelist{
+    \item Records is something I have explored, but a lot of work remains
+    \item They build on the same research as records in Elm and PureScript
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Record Types}
+  \lstinputlisting[language=oden,firstline=3,lastline=7]{src/listings/records.oden}
+  \notelist{
+    \item Here's how you write the type of a record
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Records and Row Polymorphism}
+  \lstinputlisting[language=oden,firstline=10]{src/listings/records-fullName-typed.oden}
+  \notelist{
+    \item Functions can take records as arguments and access their fields
+    \item If we look at the type signature for this function...
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Records and Row Polymorphism}
+  \lstinputlisting[language=oden,firstline=3,lastline=9]{src/listings/records-fullName-typed.oden}
+  \notelist{
+    \item This is the type inferred by the compiler
+    \item We see that \textit{fullName} takes a record with at least the two
+      fields, \textit{firstName} and \textit{lastName}
+    \item If applied to a record with more fields, they will be bound to
+      the row variable \textit{r}
+    \item This is called row polymorphism, and means that functions can take
+      records of varying shapes
+    \item It works well with the type inference
+  }
+\end{frame}
+
+
+\begin{frame}
+  \singletitle{
+    Protocols
+    \\
+    \normalsize{\normalfont{\textit{Spoiler: Very similar to type classes}}}
+  }
+  \notelist{
+    \item Protocols are very much like type classes in Haskell
+    \item I wanted another name than 'Type Classes'
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Protocols}
+  \lstinputlisting[language=oden,firstline=3,lastline=9]{src/listings/protocols.oden}
+  \notelist{
+    \item Monoid is a built-in protocol with two methods -- apply and identity
+    \item We implement Monoid for records representing points
+  }
+\end{frame}
+
+
+\begin{frame}
+  \frametitle{Protocols}
+  \lstinputlisting[language=oden,firstline=11,lastline=14]{src/listings/protocols.oden}
+  \notelist{
+    \item When we have an implementation we can use the methods on matching
+      record values
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Protocols}
+  \lstinputlisting[language=oden,firstline=11,lastline=14]{src/listings/protocols-with-operator.oden}
+  \notelist{
+    \item And with Monoid we can use the ++ operator
+    \item It desugars into the same method as we saw before
+    }
+\end{frame}
+
+\begin{frame}
+  \singletext{Procotols are not simple}
+  \notelist{
+    \item So after all this talk about a simple language
+    \item Protocols, or ad-hoc polymorphism, does seem complex
+    \item It is, however, the best fitting concept I've found for operator
+      overloading and Go interop in general
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Channels}
+  \lstinputlisting[language=oden,firstline=7,lastline=12]{src/listings/channels.oden}
+  \notelist{
+    \item I've done some work on channels also
+    \item These are similar to Go, except channels are not special in the type
+      system
+    \item This needs more work, not released yet
+    \item EXPLAIN CODE
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Go Expressions}
+  \lstinputlisting[language=oden,firstline=10,lastline=13]{src/listings/go-expression.oden}
+  \notelist{
+    \item Related to channels are go expressions
+    \item Instead of a statement, the go keyword denotes a go expression
+    \item The expression is of type Receiver, parameterized by the type of the
+      expression after the go keyword
+    \item In this example we do three operations in parallel
+    }
+\end{frame}
+
+\begin{frame}
+  \singletext{That's not all}
+  \notelist{
+    \item There's more too see in Oden
+    \item I don't have time to go into all the details
+    }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Finding more information}
+  \notelist{
+    \item If you want to learn more, you can check out:
+  }
+\end{frame}
+
+
+\begin{frame}
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/graphics/website.png}
+    \\
+    \href{https://oden-lang.org}{oden-lang.org}
+  \end{figure}
+  \notelist{
+    \item The website at oden-lang.org contains more information, a development
+      blog, and links to the User Guide
+  }
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/graphics/documentation.png}
+    \\
+    \href{https://oden-lang.org/user-guide/latest/}{oden-lang.org/user-guide/latest/}
+  \end{figure}
+  \notelist{
+    \item I have worked a lot on the user guide
+    \item Again, this is related to the MVP Pyramid
+    \item Many example programs can be run directly in the documentation
+    \item The user guide is available in print and eBook format PDFs
+  }
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.8\textwidth]{src/graphics/playground.png}
+    \\
+    \href{https://playground.oden-lang.org}{playground.oden-lang.org}
+  \end{figure}
+  \notelist{
+    \item At \textit{playground.oden-lang.org} you can try Oden in your web
+      browser
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{What's next?}
+  \notelist{
+    \item Oden is an experiment, very young
+    \item There are lots of stuff left to do
+    \item I'm currently evaluating what to do with this, if and how to proceed
+    \item I'd really like to hear what you think!
+    \item Come talk to me afterwards
+  }
+\end{frame}
+
+\begin{frame}
+  \begin{figure}[]
+    \centering
+    \includegraphics[width=0.5\textwidth]{src/graphics/oden-logo.png}
+    \vspace{-1.25em}
+    \\
+    \Huge{\bfseries{Thank you!}}
+  \end{figure}
+  \notelist{
+    \item And that is all.
+    \item Thank you!
+  }
+\end{frame}
