@@ -1,4 +1,4 @@
-renderNameForm err conn =
+renderNameForm err conn = `\pause`
   respond
   (fold [ errHtml
         , "<form method=\"post\">"
@@ -6,7 +6,7 @@ renderNameForm err conn =
         , "<p><button type=\"submit\">Send</button></p>"
         , "</form>"
         ])
-  conn
+  conn `\pause`
   where errHtml =
           case err of
             Just s -> "<p style=\"color: red;\">" <> s <> "</p>"
