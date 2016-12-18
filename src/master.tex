@@ -2,14 +2,17 @@
 \usepackage[utf8]{inputenc}
 
 \usepackage{xcolor}
+\definecolor{darkgray}{HTML}{666666}
 \definecolor{mediumgray}{HTML}{888888}
 \definecolor{dimgray}{HTML}{BBBBBB}
 \definecolor{brightred}{HTML}{FF5555}
-\definecolor{codehighlightcolor}{HTML}{AF5FD7}
+\definecolor{string_number}{HTML}{338800}
+\definecolor{theme_purple}{HTML}{6E6D97}
 
+\setbeamercolor{alerted text}{fg=black}
+\setbeamerfont{alerted text}{series=\bfseries}
 
-%\setbeamercolor*{palette secondary}{use=structure,fg=white,bg=red}
-% \setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=green}
+\beamerdefaultoverlayspecification{<+-| alert@+>}
 
 \usepackage{setspace}
 \setstretch{1.5}
@@ -44,7 +47,7 @@
 \setbeamerfont{date}{size=\fontsize{10pt}{10pt}}
 \setbeamertemplate{footline}{
   \hspace{0.25cm}
-  \includegraphics[height=1.5em]{src/graphics/black_lambda.png}
+  %\includegraphics[height=1.5em]{src/graphics/black_lambda.png}
   \hfill
   \color{mediumgray}{
     \href{https://twitter.com/\twitterhandle}{@\twitterhandle}}
@@ -53,23 +56,42 @@
 }
 \setbeamertemplate{items}[circle]
 
-\newcommand\Small{\fontsize{5}{5}\selectfont}
-
 \usepackage{listings}
+
+\makeatletter
+\lst@InstallKeywords k{types}{typestyle}\slshape{typestyle}{}ld
+\lst@InstallKeywords k{constructors}{constructorstyle}\slshape{constructorstyle}{}ld
+\makeatother
+
 \include{src/purescript-language}
 \lstset{
   columns=fixed,
   basewidth=.6em,
   basicstyle=\linespread{1.2}\ttfamily,
   commentstyle=\color{gray}\textit,
-  keywordstyle=\ttfamily,
-  stringstyle=\color{codehighlightcolor},
-  numberstyle=\color{codehighlightcolor},
+  keywordstyle=\color{purple}\ttfamily,
+  stringstyle=\color{olive},
+  numberstyle=\color{olive},
+  typestyle=\color{teal},
+  constructorstyle=\color{teal},
   showstringspaces=false,
   aboveskip=0pt,
   belowskip=0pt,
-	mathescape=false,
-	escapechar=\@
+	%mathescape=false,
+  %escapechar=\@
+  escapeinside=``
+}
+
+\lstdefinestyle{medium-size}{
+  basicstyle=\linespread{1.2}\ttfamily\footnotesize
+}
+
+\lstdefinestyle{small-size}{
+  basicstyle=\linespread{1.2}\ttfamily\scriptsize
+}
+
+\lstdefinestyle{smaller-size}{
+  basicstyle=\linespread{1.2}\ttfamily\tiny
 }
 
 \newcommand{\singletitle}[1]{

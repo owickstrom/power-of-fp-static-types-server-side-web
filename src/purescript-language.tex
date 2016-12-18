@@ -16,9 +16,54 @@
     data,
     forall,
     where,
+    class,
     derive,
     instance
   },
+  otherkeywords={=,==,>,<,<=,>=,\\=,~,\$,\@,*,\&,<<<,>>>,>>=,<\$>,<=<,>=>,<>,<*>,<*,*>,->,<-,_,::,\(,\),\{,\},[,],\|},
+  moretypes={
+    Int,
+    String,
+    Maybe,
+    Either,
+    Error,
+    Functor,
+    Monoid,
+    Applicative,
+    Alternative,
+    Semigroup,
+    Monad,
+    HTTP,
+    Eff,
+    CONSOLE,
+    EXCEPTION,
+    Aff,
+    AVAR
+  },
+  moreconstructors={
+    Just,
+    Nothing,
+    Left,
+    Right,
+  },
+  % Project-specific
+  moretypes={
+    Conn,
+    Middleware,
+    RequestBody,
+    ResponseWriter,
+    GET,
+    POST,
+    Header,
+    ResponseStateTransition,
+    HeadersOpen,
+    HeadersClosed,
+    ResponseEnded,
+  },
+  moreconstructors={
+    GET,
+    POST,
+  }
   sensitive=true,
   morecomment=[l]{--}, % l is for line comment
   morecomment=[s]{\{-}{-\}}, % s is for start and end delimiter
