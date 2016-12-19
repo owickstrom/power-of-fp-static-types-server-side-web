@@ -1,6 +1,6 @@
-headers
+headers `\pause`
   :: forall t m req res rw c.
-     (Traversable t, Monad m, ResponseWriter rw m) =>
+     (`\textbf{Traversable\ t}`, Monad m, ResponseWriter rw m) =>
      `\textbf{t Header}` `\pause`
   -> Middleware
      m

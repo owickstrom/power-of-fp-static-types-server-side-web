@@ -1,4 +1,4 @@
-respond
+respond `\pause`
   :: forall r m req res rw c.
      (Monad m, `\textbf{Response r}`, ResponseWriter rw m) =>
      `\textbf{r}` `\pause`
