@@ -1,13 +1,15 @@
-renderNameForm err conn = `\pause`
-  respond
-  (fold [ errHtml
-        , "<form method=\"post\">"
-        , "<label>Your Name: <input method=\"post\" name=\"firstName\"></label>"
-        , "<p><button type=\"submit\">Send</button></p>"
-        , "</form>"
-        ])
-  conn `\pause`
+renderNameForm err = html do `\pause`
+  errHtml
+  element "form" [(Tuple "method" "post")] do
+    element "label" [Tuple "for" "firstName"] do
+      text "Your Name:"
+    p [] do
+      element "input" [ Tuple "name" "firstName"
+                      , Tuple "id" "firstName"
+                      ] (pure unit)
+    p [] do
+      element "button" [] (text "Send") `\pause`
   where errHtml =
           case err of
-            Just s -> "<p style=\"color: red;\">" <> s <> "</p>"
-            Nothing -> ""
+            Just s -> p [(Tuple "style" "color: red;")] (text s)
+            Nothing -> pure unit
