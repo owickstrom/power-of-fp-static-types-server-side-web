@@ -1,16 +1,14 @@
-homeView = `\pause`
-  html do
-    h1 [] (text "Welcome!") `\pause`
-    p [] do
-      text "Read more at " `\pause`
-      `\textbf{linkTo\ about}` (text "About") `\pause`
-      text "." `\pause`
+homeView = do
+  h1 [] (text "Welcome!")
+  p [] do
+    text "Read more at "
+    -- Type-safe routing:
+    linkTo about (text "About")
+    text "." `\pause`
 
 home = { path: []
         , "GET":
-          handler (contentType textHTML
-                  >=> closeHeaders
-                  >=> homeView)
+          handler (htmlWithStatus statusOK homeView)
         , "POST": notSupported
         }
 

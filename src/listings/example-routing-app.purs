@@ -1,4 +1,4 @@
 app = `\pause`
-  fallbackTo `\pause`
-  (contentType textHTML >=> closeHeaders >=> notFound) `\pause`
+  fallbackTo
+  notFound
   (`\textbf{resource\ home}` <|> `\textbf{resource about}`)

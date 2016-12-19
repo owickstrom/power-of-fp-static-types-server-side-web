@@ -1,11 +1,8 @@
-aboutView = html do `\pause`
-  h1 [] (text "About") `\pause`
-  p [] (text "OK, about this example...") `\pause`
-
-about = `\pause`
-  { path: ["about"] `\pause`
-  , "GET": handler (contentType textHTML
-                    >=> closeHeaders
-                    >=> aboutView) `\pause`
-  , "POST": notSupported `\pause`
-  }
+aboutView = do
+  h1 [] (text "About")
+  p [] (text "OK, about this example...")
+`\pause`
+about = { path: ["about"]
+        , "GET": handler (htmlWithStatus statusOK aboutView)
+        , "POST": notSupported
+        }
