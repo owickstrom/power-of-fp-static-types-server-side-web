@@ -15,11 +15,12 @@
 \begin{frame}
   \frametitle{Goals}
   \begin{itemize}
-    \item A safe HTTP middleware architecture
-    \item Make the effects of applying middleware explicit in types
-    \item Ensure correct composition of middleware and application components
-    \item Interoperability with NodeJS and other backends (purerl, purescript-native)
-    \item No magic
+    \pause
+    \item<+-> A safe HTTP middleware architecture
+    \item<+-> Make the effects of applying middleware explicit in types
+    \item<+-> Ensure correct composition of middleware and application components
+    \item<+-> Interoperability with NodeJS and other backends (purerl, purescript-native)
+    \item<+-> No magic
   \end{itemize}
   \notelist{
   \item TODO
@@ -29,25 +30,25 @@
 \begin{frame}
   \frametitle{We do not want...}
   \begin{itemize}
-    \item Incorrect ordering header and body writing
-    \item Writing incomplete, or multiple, responses
-    \item Consuming of a non-parsed request body
-    \item Consuming of a request body parsed as the wrong type
-    \item Missing error handling middleware
-    \item Missing authentication and/or authorization checks
-    \item Linking, in an HTML anchor, to a resource that is not routed
-    \item Posting, in an HTML form, to a resource that is not routed
+    \pause
+    \item<+-> Incorrect ordering of header and body writing
+    \item<+-> Writing of incomplete, or multiple, responses
+    \item<+-> Missing reed or parsing of request body
+    \item<+-> Consuming of a request body parsed as the wrong type
+    \item<+-> Missing error handling middleware
+    \item<+-> Missing authentication and/or authorization checks
+    \item<+-> Links and forms to resources that are not routed
   \end{itemize}
 \end{frame}
 
 \begin{frame}
   \frametitle{How}
   \begin{itemize}
-    \item Track middleware effects in type system (not only side-effects!)
-    \item Leverage extensible records in PureScript
-    \item Provide a common API for middleware
-    \item Write backend-agnostic middleware where possible
-    \item Integrate with existing NodeJS middleware
+    \item<+-> Track middleware effects in type system (not only side-effects!)
+    \item<+-> Leverage extensible records in PureScript
+    \item<+-> Provide a common API for middleware
+    \item<+-> Write backend-agnostic middleware where possible
+    \item<+-> Integrate with existing NodeJS middleware
   \end{itemize}
 \end{frame}
 
@@ -83,11 +84,12 @@
 \begin{frame}
   \frametitle{Response State Transitions}
   \begin{itemize}
-    \item Hyper tracks the state of response writing
-    \item \textit{conn.response.writer}
-    \item Parameterized by a state type parameter to ensure correctness in ordering
-    \item Constrained by the \textit{ResponseWriter} type class
-    \item Response-writing middleware can be backend-agnostic
+    \pause
+    \item<+-> Hyper tracks the state of response writing
+    \item<+-> \textit{conn.response.writer}
+    \item<+-> Parameterized by a state type parameter to ensure correctness in ordering
+    \item<+-> Constrained by the \textit{ResponseWriter} type class
+    \item<+-> Response-writing middleware can be backend-agnostic
   \end{itemize}
 \end{frame}
 
@@ -187,7 +189,7 @@
 
 \begin{frame}
   \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-renderNameForm.purs}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/example-renderNameForm.purs}
   \notelist{
   \item TODO
     }
@@ -195,7 +197,7 @@
 
 \begin{frame}
   \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-htmlWithStatus.purs}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-htmlWithStatus.purs}
   \notelist{
   \item TODO
     }
@@ -203,7 +205,7 @@
 
 \begin{frame}
   \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-form-handler.purs}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-form-handler.purs}
   \notelist{
   \item TODO
     }
@@ -220,7 +222,7 @@
 
 \begin{frame}
   \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=small-size]{src/listings/example-form-app.purs}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-form-app.purs}
   \notelist{
   \item TODO
     }

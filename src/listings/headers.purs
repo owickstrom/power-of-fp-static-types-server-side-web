@@ -5,4 +5,4 @@ headers `\pause`
   -> Middleware
      m
      (Conn req { writer :: `\textbf{rw HeadersOpen}` | res } c)
-     (Conn req { writer :: `\textbf{rw HeadersClosed}` | res } c)
+     (Conn req { writer :: `\textbf{rw BodyOpen}` | res } c)

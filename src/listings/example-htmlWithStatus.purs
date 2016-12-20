@@ -1,5 +1,5 @@
-htmlWithStatus status x =
+htmlWithStatus status doc =
   writeStatus status
   >=> contentType textHTML
   >=> closeHeaders
-  >=> html x
+  >=> html doc
