@@ -38,13 +38,15 @@
     CONSOLE,
     EXCEPTION,
     Aff,
-    AVAR
+    AVAR,
+    Proxy,
   },
   moreconstructors={
     Just,
     Nothing,
     Left,
     Right,
+    Proxy,
   },
   % Project-specific
   moretypes={
@@ -52,6 +54,7 @@
     Middleware,
     RequestBody,
     ResponseWriter,
+    Response,
     GET,
     POST,
     Header,
@@ -60,6 +63,7 @@
     HeadersOpen,
     BodyOpen,
     ResponseEnded,
+    EncodeHTML,
   },
   moreconstructors={
     GET,
