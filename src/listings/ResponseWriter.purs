@@ -1,4 +1,4 @@
-class ResponseWriter rw m | rw -> m where `\pause`
+class ResponseWriter rw m b | rw -> b where `\pause`
   writeStatus
     :: Status
     -> ResponseStateTransition m rw `\textbf{StatusLineOpen HeadersOpen}` `\pause`

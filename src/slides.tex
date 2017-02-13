@@ -28,7 +28,7 @@
     \item<+-> Functional Programming, Type Systems, and Web Applications
     \item<+-> What about Server-Side Rendering?
     \item<+-> Web Servers, Functional Programming, and Static Typing
-    \item<+-> Hyper: Elegant Weapons for a More Civilized Page
+    \item<+-> Hyper
   \end{itemize}
   \notelist{
   \item TODO
@@ -60,7 +60,7 @@
     \item<+-> FP influences Javascript
     \item<+-> ECMAScript 6 has higher-order functions, arrow function syntax
     \item<+-> Libraries like Underscore, Rambda, Fantasy Land
-    \item<+-> React is functional at it's core
+    \item<+-> React is functional at its core
     \item<+-> Functional Reactive Programming (FRP)
     \item<+-> Javascript as a compile target for FP languages
     \item<+-> Still, main focus is single-page apps
@@ -135,7 +135,17 @@
   \frametitle{Statically Typed Middleware}
   \begin{itemize}
     \pause
-    \item<+-> ...
+    \item<+-> Middleware is a common abstraction
+    \item<+-> Very easy to mess up if dynamically typed
+      \begin{itemize}
+        \item<+-> Incorrect ordering
+        \item<+-> Incomplete responses
+        \item<+-> Overwriting headers
+        \item<+-> Writing multiple responses
+        \item<+-> Consuming non-parsed, or badly parsed, request body
+        \item<+-> Missing authentication and/or authorization
+      \end{itemize}
+    \item<+-> Idea: use extensible records in PureScript!
   \end{itemize}
 \end{frame}
 
@@ -146,7 +156,13 @@
 
 
 \begin{frame}
-  \singletitle{\includegraphics[width=0.5\textwidth]{src/graphics/hyper.png}}
+  \begin{center}
+    \vfill\vfill
+    \includegraphics[width=0.5\textwidth]{src/graphics/hyper.png}\\
+    \vspace{1em}
+    \fontsize{20pt}{20pt}{Type-safe, statically checked composition of HTTP servers}
+    \vfill\vfill
+  \end{center}
   \notelist{
   \item TODO
   }
@@ -168,27 +184,14 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{We do not want...}
+  \frametitle{How?}
   \begin{itemize}
     \pause
-    \item<+-> Incorrect ordering of header and body writing
-    \item<+-> Writing of incomplete, or multiple, responses
-    \item<+-> Missing reed or parsing of request body
-    \item<+-> Consuming of a request body parsed as the wrong type
-    \item<+-> Missing error handling middleware
-    \item<+-> Missing authentication and/or authorization checks
-    \item<+-> Links and forms to resources that are not routed
-  \end{itemize}
-\end{frame}
-
-\begin{frame}
-  \frametitle{How}
-  \begin{itemize}
     \item<+-> Track middleware effects in type system (not only side-effects!)
     \item<+-> Leverage extensible records in PureScript
     \item<+-> Provide a common API for middleware
     \item<+-> Write backend-agnostic middleware where possible
-    \item<+-> Integrate with existing NodeJS middleware
+    \item<+-> Integrate with existing NodeJS libraries
   \end{itemize}
 \end{frame}
 
@@ -211,13 +214,46 @@
 
 
 \begin{frame}
-  \frametitle{Middleware}
+  \frametitle{Middleware (Old Design)}
+  \lstinputlisting[language=purescript]{src/listings/MiddlewareOld.purs}
+  \notelist{
+  \item A function transformed a Conn to another Conn, in some type \textit{m}
+  \item A type synonym for a regular function
+  \item The \textit{m} could be any Applicative or Monad
+  \item This signature might remind you of Bind
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Middleware (Old Design)}
+  \lstinputlisting[language=purescript]{src/listings/Kleisli.purs}
+  \notelist{
+  \item Middleware could therefore be composed using regular Kleisli composition
+  \item Here we see three middleware, composed from left to right
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Whoops, Not Safe}
+  \lstinputlisting[language=purescript]{src/listings/MiddlewareOldUnsafe.purs}
+  \notelist{
+  \item We define a middleware called \textit{badMiddleware}
+  \item It takes a conn and passes it to the first respond middleware
+  \item It ignores that resulting conn, passes the argument again
+  \item Had we passed the result, or used Kleisli, we would have a type error
+  \item The problem: Our safety is in the Conn values, and we can discard them
+  \item The solution: The monad has to carry the Conn type
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Middleware (Revised)}
   \lstinputlisting[language=purescript]{src/listings/Middleware.purs}
   \notelist{
-  \item A function transforming a Conn to another Conn, in some monadic type \textit{m}
-  \item A type synonym, but still a regular function
-  \item The \textit{m} can be any monad stack
-  \item Can be used to maintain state, record metrics, provide configuration
+  \item The new middleware is an indexed monad
+  \item Works as a state monad, with state type changes in its parameters
+  \item You cannot run an effectful middleware without the types matching
+  \item Let's see how this solves the double-end problem from before
     }
 \end{frame}
 
@@ -226,18 +262,21 @@
   \begin{itemize}
     \pause
     \item<+-> Hyper tracks the state of response writing
-    \item<+-> \textit{conn.response.writer}
-    \item<+-> Parameterized by a state type parameter to ensure correctness in ordering
-    \item<+-> Constrained by the \textit{ResponseWriter} type class
+    \item<+-> Guarantees correctness in response handling, preventing common programming errors
+    \item<+-> Abstractions can be built on top safely
     \item<+-> Response-writing middleware can be backend-agnostic
   \end{itemize}
 \end{frame}
+
 
 \begin{frame}
   \frametitle{ResponseStateTransition}
   \lstinputlisting[language=purescript,style=medium-size]{src/listings/ResponseStateTransition.purs}
   \notelist{
-  \item TODO
+  \item We start by looking at this helper type alias
+  \item A transition is a Middleware
+  \item Takes Conn with Response writer in the \textbf{from} state
+  \item Returns Conn with Response writer in the \textbf{to} state
     }
 \end{frame}
 
@@ -245,7 +284,7 @@
   \frametitle{ResponseWriter}
   \lstinputlisting[language=purescript,style=small-size]{src/listings/ResponseWriter.purs}
   \notelist{
-  \item TODO
+  \item ResponseWriter encodes the possible state transitions
     }
 \end{frame}
 
@@ -253,7 +292,9 @@
   \frametitle{Writing Headers}
   \lstinputlisting[language=purescript,style=medium-size]{src/listings/headers.purs}
   \notelist{
-  \item TODO
+  \item The \textit{headers} function is a minimal example of abstraction
+  \item It writes all specified headers, then closes headers
+  \item The implementation? Pretty simple.
     }
 \end{frame}
 
@@ -442,4 +483,3 @@
   \item TODO
     }
 \end{frame}
-

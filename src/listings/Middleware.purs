@@ -1,1 +1,2 @@
-type Middleware m c c' = c -> m c'
+newtype Middleware m i o a =
+  Middleware (i -> m (Tuple a o))
