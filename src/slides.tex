@@ -299,102 +299,101 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Writing a Response}
-  \lstinputlisting[language=purescript]{src/listings/Response.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Writing a Response}
-  \lstinputlisting[language=purescript,style=medium-size,firstline=1,lastline=8]{src/listings/respond.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Writing a Response}
-  \lstinputlisting[language=purescript,firstline=9]{src/listings/respond.purs}
-  \notelist{
-  \item The implementation is quite simple.
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Parsing the Request Body}
-  \lstinputlisting[language=purescript,style=small-size]{src/listings/readBodyAsString.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Parsing the Request Body}
-  \lstinputlisting[language=purescript,style=small-size]{src/listings/readBody.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \singletitle{Form Parsing}
+  \singletitle{Type-Level Routing}
   \notelist{
   \item TODO
   }
 \end{frame}
 
 \begin{frame}
-  \frametitle{Form Parsing}
-  \lstinputlisting[language=purescript,firstline=1,lastline=15,style=medium-size]{src/listings/parseForm.purs}
+  \frametitle{A Routing Type}
+  \lstinputlisting[language=purescript]{src/listings/Site1.purs}
   \notelist{
   \item TODO
     }
 \end{frame}
 
 \begin{frame}
-  \frametitle{Form Parsing}
-  \lstinputlisting[language=purescript,firstline=16,style=smaller-size]{src/listings/parseForm.purs}
-  \notelist{
-  \item Hej hopp
-    }
-\end{frame}
-
-\begin{frame}
-  \singletitle{Example (Form Parsing)}
-  \notelist{
-  \item TODO
-  }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=small-size]{src/listings/example-renderNameForm.purs}
+  \frametitle{Handler}
+  \lstinputlisting[language=purescript]{src/listings/Site1-handler.purs}
   \notelist{
   \item TODO
     }
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-htmlWithStatus.purs}
+  \frametitle{HTMLEncode}
+  \lstinputlisting[language=purescript]{src/listings/Site1-encode.purs}
   \notelist{
   \item TODO
     }
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-form-handler.purs}
+  \frametitle{Proxy}
+  \textit{
+  The Proxy type and values are for situations where type information is
+  required for an input to determine the type of an output, but where it is not
+  possible or convenient to provide a value for the input.}
+\end{frame}
+
+\begin{frame}
+  \frametitle{Site Proxy}
+  \lstinputlisting[language=purescript]{src/listings/Site1-proxy.purs}
   \notelist{
   \item TODO
     }
 \end{frame}
 
 \begin{frame}
-  \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-form-handlePost.purs}
+  \frametitle{Site Router}
+  \lstinputlisting[language=purescript]{src/listings/Site1-router.purs}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Site Router}
+  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/Site1-main.purs}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \singletitle{More Routes!}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple Endpoints with Captures}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2.purs}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple Handlers}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2-handler.purs}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Multiple Endpoint Router}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2-router.purs}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Automatically Derived XHR Clients}
   \notelist{
   \item TODO
     }
@@ -402,71 +401,16 @@
 
 
 \begin{frame}
-  \frametitle{Example (Form Parsing)}
-  \lstinputlisting[language=purescript,style=medium-size]{src/listings/example-form-app.purs}
+  \singletitle{Summary}
   \notelist{
   \item TODO
     }
 \end{frame}
 
 \begin{frame}
-  \singletitle{Demo}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \singletitle{Example (Type-Safe Routing)}
-  \notelist{
-  \item TODO
-  }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example (Type-Safe Routing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-routing-about.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example (Type-Safe Routing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-routing-home.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Example (Type-Safe Routing)}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/example-routing-app.purs}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \singletitle{Demo}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \singletitle{Next Up}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Next Up}
+  \frametitle{Summary}
   \begin{itemize}
-    \item Routed resources should be encoded in Conn types
-    \item Cross-routing is tricky, requires annotations
-    \item All the WEB SCALE stuff
+    \item TODO
   \end{itemize}
 \end{frame}
 
