@@ -1,5 +1,9 @@
 main =
-  runServer defaultOptions onListening onRequestError {} site1Router
+  runServer defaultOptions
+            onListening
+            onRequestError
+            {}
+            site1Router
   where
     onListening (Port port) =
       log ("Listening on http://localhost:" <> show port)

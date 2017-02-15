@@ -103,6 +103,14 @@
     \item<+-> Maintainable code
     \item<+-> Developer experience, incentivize not doing SPA
   \end{itemize}
+  \notelist{
+  \item We have seen a lot of dynamically typed languages in web development
+  \item When programs grow big, and teams grow big, static typing is our friend
+  \item We should be able to safely build abstractions and compose things
+  \item Be confident that the pieces work together
+	\item We should be able to maintain code, refactor it, change it, delete it
+  \item Again, I think we need a good developer experience
+  }
 \end{frame}
 
 \begin{frame}
@@ -111,14 +119,12 @@
     \pause
     \item<+-> Haskell:
       \begin{itemize}
-        \item<+-> Happstack
         \item<+-> Yesod
         \item<+-> Servant
       \end{itemize}
     \item<+-> Scala:
       \begin{itemize}
         \item<+-> Play
-        \item<+-> Lift
         \item<+-> Rho
       \end{itemize}
     \item<+-> PureScript:
@@ -295,13 +301,17 @@
   \item The \textit{headers} function is a minimal example of abstraction
   \item It writes all specified headers, then closes headers
   \item The implementation? Pretty simple.
+  \item Now for a much higher-level abstraction on top of Hyper, namely \textit{type-level routing}
     }
 \end{frame}
 
 \begin{frame}
   \singletitle{Type-Level Routing}
   \notelist{
-  \item TODO
+  \item This is very much inspired by Servant, for Haskell
+  \item I can really recommend Servant
+  \item This version for Hyper, being written in PureScript, has some benefits
+  \item I'll get to that later
   }
 \end{frame}
 
@@ -309,7 +319,9 @@
   \frametitle{A Routing Type}
   \lstinputlisting[language=purescript]{src/listings/Site1.purs}
   \notelist{
-  \item TODO
+  \item We first define a resource data type
+  \item Then we define a routing type
+  \item Note that the routing type has no value-level representation defined
     }
 \end{frame}
 
@@ -317,7 +329,11 @@
   \frametitle{Handler}
   \lstinputlisting[language=purescript]{src/listings/Site1-handler.purs}
   \notelist{
-  \item TODO
+  \item We also need a handler
+  \item The handler is a function applied when a route is matched
+  \item It returns a response for a request
+  \item Argument types and return type can be our custom data types
+  \item But how does one respond with HTML, or JSON
     }
 \end{frame}
 
@@ -325,16 +341,25 @@
   \frametitle{HTMLEncode}
   \lstinputlisting[language=purescript]{src/listings/Site1-encode.purs}
   \notelist{
-  \item TODO
+  \item We need an instance of MimeEncoder
+  \item By defining an instance for EncodeHTML, we get the MimeEncoder automatically
+  \item Hyper includes a small HTML DSL for now
+  \item It will probably use an existing one called \textit{smolder} instead
+  \item Remember how our routing type had no value-level representation?
+  \item We need to pass it to the router, but how?
     }
 \end{frame}
 
 \begin{frame}
   \frametitle{Proxy}
-  \textit{
+  \begin{center}
   The Proxy type and values are for situations where type information is
   required for an input to determine the type of an output, but where it is not
-  possible or convenient to provide a value for the input.}
+  possible or convenient to provide a value for the input.
+  \end{center}
+  \notelist{
+  \item We use the PureScript Proxy type
+  }
 \end{frame}
 
 \begin{frame}
@@ -354,8 +379,8 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Site Router}
-  \lstinputlisting[language=purescript,style=smaller-size]{src/listings/Site1-main.purs}
+  \frametitle{Main Entrypoint}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/Site1-main.purs}
   \notelist{
   \item TODO
     }
@@ -380,7 +405,19 @@
   \frametitle{Multiple Handlers}
   \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2-handler.purs}
   \notelist{
-  \item TODO
+  \item Our home handler looks like before
+  \item allUsers is simply wrapping the array of user values
+  \item getUser performs a lookup, possibly throws Not Found error
+  \item Now that we have multiple routes, how do we link between them?
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Type-Safe Links}
+  \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2-links.purs}
+  \notelist{
+  \item In our HTML encoder, we want to produce anchor tags
+  \item As we have routing types, we get type-safe links for free
     }
 \end{frame}
 
@@ -388,7 +425,9 @@
   \frametitle{Multiple Endpoint Router}
   \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2-router.purs}
   \notelist{
-  \item TODO
+  \item We combine our handlers with a structure matching the routing type
+	\item Matching the type incorrectly would result in a type error
+	\item OK, so that is nice. Can we take this further?
     }
 \end{frame}
 
@@ -399,6 +438,20 @@
     }
 \end{frame}
 
+\begin{frame}
+  \frametitle{Other Possibilites/Future Work}
+  \begin{itemize}
+    \pause
+    \item<+-> Type-safe forms
+    \item<+-> PJAX, but with JSON data and client-side templates
+    \item<+-> Mocked servers and clients using \lstinline{Arbitrary} instances
+    \item<+-> Ring-like response map abstraction
+    \item<+-> Other backends
+  \end{itemize}
+  \notelist{
+  \item TODO
+    }
+\end{frame}
 
 \begin{frame}
   \singletitle{Summary}
@@ -407,11 +460,10 @@
     }
 \end{frame}
 
-\begin{frame}
-  \frametitle{Summary}
-  \begin{itemize}
-    \item TODO
-  \end{itemize}
+\begin{frame}[allowframebreaks]
+	\frametitle{Useful References}
+  \nocite{*}
+	\printbibliography
 \end{frame}
 
 \begin{frame}

@@ -4,6 +4,7 @@ NODEMON=node_modules/.bin/nodemon
 MASTER=src/master.tex
 TEX_OPTIONS=options.tex
 SRCS=$(shell find src -name '*.tex') \
+     $(shell find src -name '*.bib') \
 		 $(shell find src/listings)
 
 SLIDES_DIR=target/slides
@@ -22,7 +23,13 @@ $(SLIDES): $(SRCS)
 	echo "\setbeameroption{show notes on second screen}" \
 		> $(SLIDES_DIR)/$(TEX_OPTIONS)
 	cd $(SLIDES_DIR) && \
-	$(TEX) \
+		$(TEX) \
+		-jobname slides \
+		-halt-on-error \
+		$(MASTER)
+	cd $(SLIDES_DIR) && bibtex slides
+	cd $(SLIDES_DIR) && \
+		$(TEX) \
 		-jobname slides \
 		-halt-on-error \
 		$(MASTER)
@@ -32,6 +39,12 @@ $(SLIDES_NO_NOTES): $(SRCS)
 	mkdir -p $(SLIDES_NO_NOTES_DIR)
 	cp -r src $(SLIDES_NO_NOTES_DIR)/src
 	echo "" > $(SLIDES_NO_NOTES_DIR)/$(TEX_OPTIONS)
+	cd $(SLIDES_NO_NOTES_DIR) && \
+		$(TEX) \
+		-jobname slides-no-notes \
+		-halt-on-error \
+		$(MASTER)
+	cd $(SLIDES_NO_NOTES_DIR) && bibtex slides-no-notes
 	cd $(SLIDES_NO_NOTES_DIR) && \
 		$(TEX) \
 		-jobname slides-no-notes \
