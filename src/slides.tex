@@ -439,6 +439,43 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Shared Routing Type}
+  \lstinputlisting[language=purescript]{src/listings/XHR-task.purs}
+  \notelist{
+  \item We define a type Task
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Shared Routing Type}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/XHR-instances.purs}
+  \notelist{
+	\item Provide some encoding and decoding instances for JSON
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Shared Routing Type}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/XHR-site.purs}
+  \notelist{
+	\item Define the routing type
+	\item and our Proxy value
+	\item Finally, we use it in a client-side application
+    }
+\end{frame}
+
+\begin{frame}
+  \frametitle{Shared Routing Type}
+  \lstinputlisting[language=purescript,style=medium-size]{src/listings/XHR-client.purs}
+  \notelist{
+	\item This is a snippet from a PureScript Pux app
+	\item The code in bold is where we generate AJAX clients for our site
+  \item We pattern match on the structure to get a specific client
+	\item I think this is a very strong case for Hyper
+    }
+\end{frame}
+
+\begin{frame}
   \frametitle{Other Possibilites/Future Work}
   \begin{itemize}
     \pause
@@ -447,9 +484,12 @@
     \item<+-> Mocked servers and clients using \lstinline{Arbitrary} instances
     \item<+-> Ring-like response map abstraction
     \item<+-> Other backends
+    \item<+-> Continue to Quest For Type-Safe Web!
   \end{itemize}
   \notelist{
-  \item TODO
+  \item So, what more can we do here?
+  \item I'd like type safe form posts, both JSON and HTML
+	\item
     }
 \end{frame}
 
