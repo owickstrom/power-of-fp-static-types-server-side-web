@@ -106,25 +106,61 @@
 \end{frame}
 
 \begin{frame}
-  \frametitle{Server-Side Rendering}
-  \begin{itemize}
-    \pause
-    \item<+-> Progressive Enhancement
-    \item<+-> Using what's already in the browser
-    \item<+-> The client-server state machine, and "isomorphic" web apps
-    \item<+-> PJAX
-  \end{itemize}
+  \singletitle{Progressive Enhancement}
   \notelist{
   \item Progressive enhancement is about defining the lower bound of support
   \item Then gradually make things nicer for more capable clients
 	\item Everyone above that threshold gets something, even if it's rough
-	\item Server-side rendering, for me, is also about leveraging the browser
-	\item I want to mention the hype around \textit{isomorphic}
-  \item Javascript app that runs on both backend and on clients, transparently
-  \item Ends up being initial rendering
-  \item The client and server state machines are fundamentally different
+  }
+\end{frame}
+
+\begin{frame}
+  \singletitle{80/20 Rule}
+  \notelist{
+  \item Let's say all of your code and functionality is not equally important
+  \item A smaller part provides the core value of your business
+  \item You have lots of supporting code as well
+	\item That applies to web applications as well
+  \item How much of the pages you visit online really needs Javascript to work?
+	\item I would claim most would work fine with links and forms
+	\item Let's write client-side code where it provides value
+  \item Unless you enjoy reinventing the web browser over and over
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{``Isomorphic'' Web Applications}
+  \begin{itemize}
+		\pause
+    \item<+-> Goal: one framework that runs on both client and server
+		\item<+-> ``Free progressive enhancements''
+    \item<+-> The client and server state machines
+    \item<+-> Are we really talking about initial rendering?
+  \end{itemize}
+  \notelist{
+	\item I want to mention the hype around \textit{isomorphic} web apps
+  \item Goal:...
+  
+  \item One executes in the browser locally
+  \item The other transfers state over the network through links and forms
+  \item Are we really talking about initial rendering ...?
+  }
+\end{frame}
+
+\begin{frame}
+  \frametitle{PJAX}
+  \begin{itemize}
+    \pause
+    \item<+-> Hooks in on link and form events
+    \item<+-> Requests pages over XHR with special header
+    \item<+-> Server responds with only inner content
+    \item<+-> PJAX swaps the inner content on the client
+  \end{itemize}
+  \notelist{
   \item A nice approach that we use for CodeScene is PJAX...
-  \item There are benefits with server-side rendering.
+  \item It progressively enhances a server-side app with low effort
+  \item \textit{explain steps...}
+  \item Maybe this is a bit rough...
   }
 \end{frame}
 
@@ -151,7 +187,7 @@
     \item<+-> Compile-time guarantees
     \item<+-> Safely abstract and compose
     \item<+-> Maintainable code
-    \item<+-> Developer experience, incentivize not doing SPA
+    \item<+-> Developer experience
   \end{itemize}
   \notelist{
   \item We have seen a lot of dynamically typed languages in web development
@@ -160,6 +196,7 @@
   \item Be confident that the pieces work together
 	\item We should be able to maintain code, refactor it, change it, delete it
   \item Again, I think we need a good developer experience
+	\item Not only making stuff shiny, but by using solid theory and research
   }
 \end{frame}
 
@@ -209,7 +246,8 @@
   \end{itemize}
   \notelist{
   \item Looking at other frameworks, like connect and Plug...
-  \item It is very easy to mess up. You can get...
+  \item In Java Servlets it's called filters
+  \item It is very easy to mess up. You can get... (up to missing auth)
   \item After a talk by Edwin Brady on Idris and session types, I got this idea...
   \item How about using extensible records ...
   }
@@ -351,6 +389,7 @@
   \lstinputlisting[language=purescript,style=small-size]{src/listings/ResponseWriter.purs}
   \notelist{
   \item ResponseWriter encodes the possible state transitions
+	\item Go through them one by one
     }
 \end{frame}
 
