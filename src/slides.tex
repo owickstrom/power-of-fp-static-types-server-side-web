@@ -283,7 +283,13 @@
     \item<+-> No magic
   \end{itemize}
   \notelist{
-  \item TODO
+  \item The goals are...
+  \item A safe HTTP middleware architecture
+  \item Make the effects of applying middleware explicit in types
+  \item Ensure correct composition
+  \item Interoperability with NodeJS and other backends
+  \item Different web servers, Erlang backend, purescript-native
+  \item Also: no magic. No preprocessing or code generation.
   }
 \end{frame}
 
@@ -291,18 +297,25 @@
   \frametitle{How?}
   \begin{itemize}
     \pause
-    \item<+-> Track middleware effects in type system (not only side-effects!)
+    \item<+-> Track middleware effects in type system, pure transformations and side effects
     \item<+-> Leverage extensible records in PureScript
     \item<+-> Provide a common API for middleware
     \item<+-> Write backend-agnostic middleware where possible
     \item<+-> Integrate with existing NodeJS libraries
   \end{itemize}
+  \notelist{
+  \item Track middleware effects in type system...
+  \item Leverage extensible records in PureScript
+  \item Provide a common API for middleware
+  \item Write backend-agnostic middleware
+  \item Integrate with existing NodeJS libraries
+  }
 \end{frame}
 
 \begin{frame}
   \singletitle{Design}
   \notelist{
-  \item TODO
+  \item I will go through the core design first
   }
 \end{frame}
 
@@ -313,6 +326,9 @@
   \item Conn, short for Connection
   \item Models the entirety of an HTTP connection
   \item Design adapted from Plug in Elixir
+  \item It has a request and response, maybe not surprising
+  \item But also components, which is an extension point for middleware
+  \item I'm not so sure about components yet, it may go away
     }
 \end{frame}
 
@@ -322,8 +338,8 @@
   \lstinputlisting[language=purescript]{src/listings/MiddlewareOld.purs}
   \notelist{
   \item A function transformed a Conn to another Conn, in some type \textit{m}
+  \item The \textit{m} was usually an Applicative or a Monad
   \item A type synonym for a regular function
-  \item The \textit{m} could be any Applicative or Monad
   \item This signature might remind you of Bind
     }
 \end{frame}
@@ -334,6 +350,8 @@
   \notelist{
   \item Middleware could therefore be composed using regular Kleisli composition
   \item Here we see three middleware, composed from left to right
+  \item The connection goes into the first one, it gives back a new one, goes into the second, and so on
+  \item All good? Not really.
     }
 \end{frame}
 
@@ -357,7 +375,8 @@
   \item The new middleware is an indexed monad
   \item Works as a state monad, with state type changes in its parameters
   \item You cannot run an effectful middleware without the types matching
-  \item Let's see how this solves the double-end problem from before
+  \item Let's see how this can solve the double-end problem from before
+  \item We will begin by looking at Response State Transitions
     }
 \end{frame}
 
@@ -366,10 +385,16 @@
   \begin{itemize}
     \pause
     \item<+-> Hyper tracks the state of response writing
-    \item<+-> Guarantees correctness in response handling, preventing common programming errors
+    \item<+-> Guarantees correctness in response side effects
     \item<+-> Abstractions can be built on top safely
     \item<+-> Response-writing middleware can be backend-agnostic
   \end{itemize}
+  \notelist {
+    \item Hyper tracks the state of response writing
+    \item Guarantees correctness in response side effects, preventing common programming errors
+    \item Abstractions can be built on top safely
+    \item Response-writing middleware can be backend-agnostic
+  }
 \end{frame}
 
 
@@ -377,10 +402,10 @@
   \frametitle{ResponseStateTransition}
   \lstinputlisting[language=purescript,style=medium-size]{src/listings/ResponseStateTransition.purs}
   \notelist{
-  \item We start by looking at this helper type alias
+  \item This is a helper type alias
   \item A transition is a Middleware
   \item Takes Conn with Response writer in the \textbf{from} state
-  \item Returns Conn with Response writer in the \textbf{to} state
+  \item Transforms it to a Conn with Response writer in the \textbf{to} state
     }
 \end{frame}
 

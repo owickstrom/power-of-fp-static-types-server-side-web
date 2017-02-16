@@ -11,7 +11,7 @@ class ResponseWriter rw m b | rw -> b where `\pause`
     :: ResponseStateTransition m rw `\textbf{HeadersOpen BodyOpen}` `\pause`
 
   send
-    :: String
+    :: b
     -> ResponseStateTransition m rw `\textbf{BodyOpen BodyOpen}` `\pause`
 
   end
