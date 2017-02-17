@@ -19,10 +19,12 @@
   \end{itemize}
   \notelist{
   \item Let me introduce myself
+  \item I live and work in Malmo in Sweden
   \item I started out in music
   \item Wrote my first band site in PHP
   \item Luckily I was saved by functional programming not long after
-  \item Building Hyper in free time, central theme of this talk
+  \item Worked on Oden
+  \item I am currently working on CodeScene, mostly in Clojure
   }
 \end{frame}
 
@@ -43,10 +45,16 @@
   \end{itemize}
   \notelist{
   \item Let me go through what I'll cover today
-  \item The first part is a general overview of ...
-  \item I'll talk about server-side rendering
-  \item and some nice examples of static typing for server-side web
+  \item First: general overview of ...
+  \item Then look closer at server-side rendering
+  \item and some examples of static typing for server-side web, next level
 	\item then we will dive into Hyper
+    \begin{itemize}
+      \item<+-> Design
+      \item<+-> Type-Level Routing
+      \item<+-> XHR Clients
+      \item<+-> Future Work
+    \end{itemize}
   }
 \end{frame}
 
@@ -54,25 +62,6 @@
   \singletitle{Overview: Functional Programming and Web Applications}
   \notelist{
   \item Let's get going
-  }
-\end{frame}
-
-\begin{frame}
-  \frametitle{Single-Page Applications}
-  \begin{itemize}
-    \pause
-    \item<+-> Work more like desktop applications
-    \item<+-> There are \textbf{a lot} of these frameworks in JS
-    \item<+-> Angular, Ember, Meteor, React (with friends)
-    \item<+-> Without Javascript, you get nothing
-  \end{itemize}
-  \notelist{
-  \item Single page apps work more like traditional desktop apps
-  \item Lot of JS frameworks, many just minor flavours of previous ones
-	\item Some of the big ones are...
-	\item And usually, without Javascript execution, you get nothing
-	\item Does this matter? Yes.
-  \item Disabled, flaky network, low-budget devices
   }
 \end{frame}
 
@@ -99,9 +88,30 @@
 \end{frame}
 
 \begin{frame}
+  \frametitle{Single-Page Applications}
+  \begin{itemize}
+    \pause
+    \item<+-> Work more like desktop applications
+    \item<+-> There are \textbf{a lot} of these frameworks in JS
+    \item<+-> Angular, Ember, Meteor, React (with friends)
+    \item<+-> Without Javascript, you get nothing
+  \end{itemize}
+  \notelist{
+  \item Single page apps work more like traditional desktop apps
+  \item Lot of JS frameworks, many just minor flavours of previous ones
+	\item Some of the big ones are...
+  \item And usually, without Javascript execution, you get nothing (last bullet)
+	\item Does this matter? Yes.
+  \item Disabled, flaky network, low-budget devices
+  }
+\end{frame}
+
+\begin{frame}
   \singletitle{What about Server-Side Rendering?}
   \notelist{
-  \item TODO
+  \item What about ...
+  \item Do we need to make a binary choice?
+  \item No. One approach is Progressive Enhancement...
   }
 \end{frame}
 
@@ -115,12 +125,12 @@
 \end{frame}
 
 \begin{frame}
-  \singletitle{80/20 Rule}
+  \singletitle{80/20}
   \notelist{
   \item Let's say all of your code and functionality is not equally important
   \item A smaller part provides the core value of your business
   \item You have lots of supporting code as well
-	\item That applies to web applications as well
+	\item Login forms, settings pages, payment, integrations, documentation
   \item How much of the pages you visit online really needs Javascript to work?
 	\item I would claim most would work fine with links and forms
 	\item Let's write client-side code where it provides value
@@ -375,7 +385,7 @@
   \item The new middleware is an indexed monad
   \item Works as a state monad, with state type changes in its parameters
   \item You cannot run an effectful middleware without the types matching
-  \item Let's see how this can solve the double-end problem from before
+  \item Let's see how this can solve the double-respond problem from before
   \item We will begin by looking at Response State Transitions
     }
 \end{frame}
@@ -499,7 +509,7 @@
   \frametitle{Site Proxy}
   \lstinputlisting[language=purescript]{src/listings/Site1-proxy.purs}
   \notelist{
-  \item TODO
+  \item Here we create a proxy for our routing type
     }
 \end{frame}
 
@@ -507,7 +517,8 @@
   \frametitle{Site Router}
   \lstinputlisting[language=purescript]{src/listings/Site1-router.purs}
   \notelist{
-  \item TODO
+  \item We define an HTTP error handler
+  \item And our router, by passing the proxy and our home handler
     }
 \end{frame}
 
@@ -515,14 +526,14 @@
   \frametitle{Main Entrypoint}
   \lstinputlisting[language=purescript,style=small-size]{src/listings/Site1-main.purs}
   \notelist{
-  \item TODO
+  \item Lastly, we define our main function that starts the server
     }
 \end{frame}
 
 \begin{frame}
   \singletitle{More Routes!}
   \notelist{
-  \item TODO
+  \item Having only one route seems lame. Let's add some more
     }
 \end{frame}
 
@@ -530,7 +541,7 @@
   \frametitle{Multiple Endpoints with Captures}
   \lstinputlisting[language=purescript,style=small-size]{src/listings/Site2.purs}
   \notelist{
-  \item TODO
+  \item (explain code)
     }
 \end{frame}
 
@@ -560,14 +571,17 @@
   \notelist{
   \item We combine our handlers with a structure matching the routing type
 	\item Matching the type incorrectly would result in a type error
-	\item OK, so that is nice. Can we take this further?
+	\item OK, so that is nice.
+  \item But I talked about progressive enhancement before? How about that?
     }
 \end{frame}
 
 \begin{frame}
   \singletitle{Automatically Derived XHR Clients}
   \notelist{
-  \item TODO
+  \item Instead of sprinkling Javascript or jQuery scripts all over the place
+  \item with no type safety or guarantees they are in sync with routes
+  \item Let's automatically dervice safe XHR clients
     }
 \end{frame}
 
@@ -593,6 +607,7 @@
   \notelist{
 	\item Define the routing type
 	\item and our Proxy value
+	\item We write our handlers and a server just like before
 	\item Finally, we use it in a client-side application
     }
 \end{frame}
@@ -621,15 +636,29 @@
   \end{itemize}
   \notelist{
   \item So, what more can we do here?
-  \item I'd like type safe form posts, both JSON and HTML
-	\item
+  \item I'd like type safe form posts
+	\item PJAX, the hyper way
+	\item Mocked servers with Arbitrary
+	\item Ring-like abstraction for response maps
+	\item Other backends
+	\item And in general, continue the quest for type-safe web!
     }
 \end{frame}
 
 \begin{frame}
   \singletitle{Summary}
   \notelist{
-  \item TODO
+  \item Server-side or SPA is not have to be a binary choice
+  \item We can make the middleground much nicer, building better tools
+  \item Good programming languages and type systems are our allies
+    }
+\end{frame}
+
+\begin{frame}
+  \singletitle{Thank You!}
+  \notelist{
+  \item Thank you
+  \item Here are some links to things I've mentioned...
     }
 \end{frame}
 
@@ -640,15 +669,8 @@
 \end{frame}
 
 \begin{frame}
-  \singletitle{Thank You}
-  \notelist{
-  \item TODO
-    }
-\end{frame}
-
-\begin{frame}
   \titlepage
   \notelist{
-  \item TODO
+  \item Questions?
     }
 \end{frame}
