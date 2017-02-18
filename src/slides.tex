@@ -57,10 +57,10 @@
   \item and some examples of static typing for server-side web, next level
 	\item then we will dive into Hyper
     \begin{itemize}
-      \item<+-> Design
-      \item<+-> Type-Level Routing
-      \item<+-> XHR Clients
-      \item<+-> Future Work
+      \item Design
+      \item Type-Level Routing
+      \item XHR Clients
+      \item Future Work
     \end{itemize}
   }
 \end{frame}
@@ -102,14 +102,18 @@
     \item<+-> There are \textbf{a lot} of these frameworks in JS
     \item<+-> Angular, Ember, Meteor, React (with friends)
     \item<+-> Without Javascript, you get nothing
+    \item<+-> Reinventing the browser
   \end{itemize}
   \notelist{
   \item Single page apps work more like traditional desktop apps
   \item Lot of JS frameworks, many just minor flavours of previous ones
 	\item Some of the big ones are...
-  \item And usually, without Javascript execution, you get nothing (last bullet)
-	\item Does this matter? Yes.
-  \item Disabled, flaky network, low-budget devices
+  \item And usually, without Javascript execution, you get nothing
+  \begin{itemize}
+    \item Does this matter? Yes.
+    \item Disabled, flaky network, low-budget devices
+  \end{itemize}
+  \item SPAs tends to reinvent things already present in web browers, like routing and forms
   }
 \end{frame}
 
@@ -138,7 +142,7 @@
   \item A smaller part provides the core value of your business
   \item You have lots of supporting code as well
 	\item Login forms, settings pages, payment, integrations, documentation
-  \item How much of the pages you visit online really needs Javascript to work?
+  \item Do they really needs Javascript to be able to work?
 	\item I would claim most would work fine with links and forms
 	\item Let's write client-side code where it provides value
   \item Unless you enjoy reinventing the web browser over and over
@@ -243,6 +247,7 @@
   \item For Haskell, two alternatives are ...
   \item Not that I know much about Scala, but I found these...
   \item And, as we are going to talk about PureScript, I want to mention...
+  \item (10 MINUTES?)
   }
 \end{frame}
 
@@ -266,11 +271,23 @@
   \item Looking at other frameworks, like connect and Plug...
   \item In Java Servlets it's called filters
   \item It is very easy to mess up. You can get... (up to missing auth)
+  \item And, if you're working with Clojure, you often get this ...
+  }
+\end{frame}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth]{src/graphics/npe.png}}
+\begin{frame}[plain]
+\end{frame}
+}
+
+\begin{frame}
+  \singletitle{Let's use extensible records in PureScript!}
+  \notelist{
   \item After a talk by Edwin Brady on Idris and session types, I got this idea...
   \item How about using extensible records ...
   }
 \end{frame}
-
 
 %
 % HYPER
@@ -287,6 +304,7 @@
   \end{center}
   \notelist{
   \item And that's where Hyper started
+  \item (20 MINUTES?)
   }
 \end{frame}
 
@@ -453,6 +471,7 @@
   \item It writes all specified headers, then closes headers
   \item The implementation? Pretty simple.
   \item Now for a much higher-level abstraction on top of Hyper, namely \textit{type-level routing}
+  \item (30 MINUTES?)
     }
 \end{frame}
 
